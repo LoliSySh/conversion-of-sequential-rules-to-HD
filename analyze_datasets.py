@@ -2,7 +2,6 @@ import logging
 import time
 from statistics import mean, median, stdev
 import csv
-#from matplotlib import pyplot as plt
 import os
 
 s_time = time.time()
@@ -14,8 +13,7 @@ class Analyzer:
     def __init__(self, seq):
 
         print("Starting preprocessing")
-        # sample
-        # self.sequences = seq[:5000]
+        
         self.sequences = seq
         self.seq_lengths = [len(seq) for seq in self.sequences]
         self.events = flatten(sequences)
@@ -39,28 +37,8 @@ class Analyzer:
                 if item in s:
                     self.events_per_item[item] += s.count(item)
         
-        #self.densities = []
-        #counter = 0
-        #print(counter)
-        #for s in self.sequences:
-        #    counter += 1
-        #    if counter % 1000 == 0:
-        #        print(counter)
-        #    self.densities.append(len(set(s)) / len(s))
-        #    for item in self.items:
-        #        if item in s:
-        #            self.events_per_item[item] += s.count(item)
                     
         print("Finished preprocessing")
-
-    #def plot_item_frequency(self):
-     #   sorted_events_per_item = dict(sorted(self.events_per_item.items(), key=lambda item: item[1], reverse=True))
-      #  items = [str(x) for x in list(sorted_events_per_item.keys())][:50]
-       # frequencies = list(sorted_events_per_item.values())[:50]
-       # print(items)
-        #print(frequencies)
-       
-        #plt.savefig("stats_bar.jpg")
 
     def get_avg_sequence_length(self):
         return mean(self.seq_lengths)
@@ -81,8 +59,8 @@ class Analyzer:
         return median(self.events_per_item.values())
 
     def get_avg_number_of_dist_items_per_sequence(self, ):
-        return self.number_of_items/ self.seq_lengths
-         #mean(self.densities)
+        #return self.number_of_items/ self.seq_lengths
+        return mean(self.densities)
 
     def get_median_number_of_dist_items_per_sequence(self, ):
         return median(self.densities), stdev(self.densities)
@@ -115,7 +93,7 @@ def transform_input(d):
         seq.append(events_temp)
     return seq
 
-directory_path = r'C:\Users\Loli\BA\output.txt\BA\after_preprocessing'
+directory_path = r'PATH TO CONVERTED EVENTLOGS'
 
 # Erstellen Sie eine Liste von Dateipfaden im Verzeichnis
 file_input = [os.path.join(directory_path, file) for file in os.listdir(directory_path)]
@@ -148,9 +126,7 @@ if file_input:
             analyzer = Analyzer(sequences)
 
 
-            #print("Plotting item frequency chart")
-            #analyzer.plot_item_frequency()
-
+        
             row = [in_file.split('/')[-1],
                    len(analyzer.sequences),
                    analyzer.number_of_items,
@@ -165,5 +141,5 @@ if file_input:
                    ]
 
             writer.writerow(row)
-            #print(f"Took {time.time() - time_s}s")
+            
         print("FINISHED")
