@@ -7,20 +7,15 @@ This repository contains the code for my Bachelor thesis which investigates the 
 
 - `preprocessing.py`:
   - **Purpose**: Preprocesses event logs and adjusts them to a format suitable for the ERMiner algorithm.
-  - **Usage**: `python Ba.py <input_log_file> <output_formatted_file>`
-
+  
 - `hasseDiagramm.py`:
   - **Purpose**: Converts sequential rules obtained from ERMiner into Hasse diagrams using the GraphViz library.
-  - **Usage**: `python hasseDiagramm.py <input_rules_file> <output_diagram_file>`
   ![Hasse Diagram Visualization](https://github.com/LoliSySh/conversion-of-sequential-rules-to-HD/assets/156702881/7adc3093-ad24-4a3f-83ba-2af1385e58ff)
 
 - `analyze_datasets.py`:
   - **Purpose**: Collects statistical characteristics of datasets for further analysis and tests the model's granularity.
-  - **Usage**: `python analyze_datasets.py <dataset_path>`
-
 - `petrinetz.py`:
   - **Purpose**: Generates Petri nets using various miners provided by the pm4py library to compare these models with the converted Hasse diagram model.
-  - **Usage**: `python petrinetz.py <input_log_file> <output_model_file>`
 
 
 ## Requirements
