@@ -1,1 +1,32 @@
-# conversion-of-sequential-rules-to-HD
+# Bachelor Thesis: Visualizing Sequential Rules with Hasse Diagrams
+
+## Overview
+This repository contains the code for my Bachelor thesis which investigates the conversion of sequential rules into Hasse diagrams. The objective is to offer a novel visualization method within the partial-order process mining field. By extracting valid, frequent patterns through sequential rule mining and visualizing them with Hasse diagrams, we preserve their inherent order, enhancing the understanding of these patterns.
+
+## Files Description
+
+- `Ba.py`:
+  - **Purpose**: Preprocesses event logs and adjusts them to a format suitable for the ERMiner algorithm.
+  - **Usage**: `python Ba.py <input_log_file> <output_formatted_file>`
+
+- `hasseDiagramm.py`:
+  - **Purpose**: Converts sequential rules obtained from ERMiner into Hasse diagrams using the GraphViz library.
+  - **Usage**: `python hasseDiagramm.py <input_rules_file> <output_diagram_file>`
+  ![Hasse Diagram Visualization](https://github.com/LoliSySh/conversion-of-sequential-rules-to-HD/assets/156702881/7adc3093-ad24-4a3f-83ba-2af1385e58ff)
+
+- `analyze_datasets.py`:
+  - **Purpose**: Collects statistical characteristics of datasets for further analysis and tests the model's granularity.
+  - **Usage**: `python analyze_datasets.py <dataset_path>`
+
+- `petrinetz.py`:
+  - **Purpose**: Generates Petri nets using various miners provided by the pm4py library to compare these models with the converted Hasse diagram model.
+  - **Usage**: `python petrinetz.py <input_log_file> <output_model_file>`
+
+
+## Requirements
+This codebase is developed using Python 3.8. Dependencies include:
+- GraphViz
+- pm4py
+
+## Contact
+For any queries regarding this project, please open an issue in this repository.
