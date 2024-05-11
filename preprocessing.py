@@ -22,7 +22,7 @@ def convert_to_custom_format(log):
 
 if __name__ == "__main__":
  
-    log = pm4py.read_xes(r"C:\Users\Loli\BA\output.txt\BA\Datensätze\BPI_Challenge_2019.xes")
+    log = pm4py.read_xes(r"PATH_TO_DATASETS\DATASET.xes")
 
     event_log = pm4py.convert_to_event_log(log)
     event_activities = pm4py.get_event_attribute_values(event_log, "concept:name")
@@ -50,7 +50,7 @@ if __name__ == "__main__":
     print(x)
 
                
-    with open("ergebnis - Kopie.txt", "w") as txt_file:
+    with open("ergebnis.txt", "w") as txt_file:
         txt_file.write(x)
  
             
