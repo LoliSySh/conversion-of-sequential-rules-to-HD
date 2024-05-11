@@ -1,33 +1,31 @@
-import random
 import graphviz as grv
-import pm4py 
-import os
-import pm4py
-from pm4py.objects.petri_net import semantics
+
 
 def extract_data(log, name):
     relation = []
     graphDic = {}
     for line in log:
         parts = line.split('==>')        
-        source = {int(value) for value in parts[0].split(',')} if ',' in parts[0].strip() else {int(parts[0].strip())}
+        antecedent = {int(value) for value in parts[0].split(',')} if ',' in parts[0].strip() else {int(parts[0].strip())}
         t = parts[1].split('#SUP:')[0].strip()
-        target = {int(value) for value in t.split(',')} if ',' in t else {int(t)}
+        consequent = {int(value) for value in t.split(',')} if ',' in t else {int(t)}
+        #{('1 ', ' 2,3 '): (4, 1.0)}    
         
+             
         sup_value = float(parts[1].split('#SUP:')[1].split('#CONF:')[0].strip())
         conf_value = float(parts[1].split('#CONF:')[1].strip())
-        
 
-        #{('1 ', ' 2,3 '): (4, 1.0)} 
         
-        edge = [(source, (source.union(target)))]
+        # edge ist eine Liste aus tupeln die aus int sets bestehen (antecedent, (antecedent.union(consequent)))
+        #{({1}, {2,3})} 
+        edge = [(antecedent, (antecedent.union(consequent)))]
 
         graphDic.update({str(edge[0]): (sup_value, conf_value) })
         relation.extend(edge)
         print(relation)
  
-    same_source = []
-    same_target = []
+    same_antecedent = []
+    same_consequent = []
     rest =[]
     
    
@@ -35,7 +33,7 @@ def extract_data(log, name):
     transitiv_rel = is_transitiv(relation,all_targs)
     
     for rel in transitiv_rel:
-        # hier werden die rel mit den gleichen source gezählt, die nicht selbst nicht (selbst exklusive)
+        # hier werden die rel mit den gleichen antecedent gezählt, die nicht selbst nicht (selbst exklusive)
         if  sum(1 for tupel in transitiv_rel if rel[0] == tupel[0]) > 1:
             
             #hier wird gmerged ({1}, {1,2},{1,3}), damit es später leichter wird um den graph zu generieren    
@@ -45,18 +43,18 @@ def extract_data(log, name):
             #hier speichern wir es so (({1},{1,2}), ({1},{1,3})), damit wir sie aus trans_rel entfernen können
             ss_rel = tuple([tupel for tupel in transitiv_rel if rel[0] == tupel[0]] )
             for elem in ss_rel: transitiv_rel.remove(elem)
-            if ss_Pair not in same_source : same_source.extend([ss_Pair])
+            if ss_Pair not in same_antecedent : same_antecedent.extend([ss_Pair])
                     
         if  sum(1 for tupel in transitiv_rel if rel[1] == tupel[1]) > 1:
             st_pair = tuple([tupel[0] for tupel in transitiv_rel if rel[1]== tupel[1] ]+[rel[1]])
             st_rel = tuple([tupel for tupel in transitiv_rel if rel[1] == tupel[1] ])
             for elem in st_rel :transitiv_rel.remove(elem)
-            if st_pair not in same_target :same_target.extend([st_pair])             
+            if st_pair not in same_consequent :same_consequent.extend([st_pair])             
         
     
     rest.extend(transitiv_rel)
     #[({4}, {3, 4}), ({1, 4}, {1, 3, 4})]
-    all = same_source+same_target+rest
+    all = same_antecedent+same_consequent+rest
     
     
     
@@ -71,7 +69,7 @@ def extract_data(log, name):
 
     """    
     for ord in all:
-        if ord in same_source:
+        if ord in same_antecedent:
             for elem in ord[1:]:
                 if len(ord[0])  > 1:
                     filtered_tuples = [tupel for tupel in all_targs if len(tupel) == len(ord[0])]
@@ -86,7 +84,7 @@ def extract_data(log, name):
                     suCoVa = findeSupConfValue(graphDic,ord[0],elem) 
                     dot_src += f'    "{(numToEntity(ord[0]))}" -> "{(numToEntity(elem))}" [taillabel= "{suCoVa}" ] \n'
                 
-        if ord in same_target:
+        if ord in same_consequent:
             for ele in ord[:-1]:
                 suCoVa = findeSupConfValue(graphDic,ele,ord[-1]) 
                 dot_src += f'    "{numToEntity(ele)}" -> "{numToEntity(ord[-1])}" [taillabel= "{suCoVa}" ] \n'
@@ -165,28 +163,18 @@ def numToEntity (elem):
         dicNum={'Declaration SUBMITTED by EMPLOYEE': 1, 'Declaration FINAL_APPROVED by SUPERVISOR': 2, 'Request Payment': 3, 'Payment Handled': 4, 'Declaration APPROVED by PRE_APPROVER': 5, 'Declaration REJECTED by MISSING': 6, 'Declaration REJECTED by PRE_APPROVER': 7, 
                 'Declaration REJECTED by EMPLOYEE': 8, 'Declaration SAVED by EMPLOYEE': 9, 'Declaration REJECTED by SUPERVISOR': 10, 'Declaration APPROVED by ADMINISTRATION': 11, 'Declaration APPROVED by BUDGET OWNER': 12, 'Declaration FOR_APPROVAL by SUPERVISOR': 13, 
                 'Declaration REJECTED by ADMINISTRATION': 14, 'Declaration FOR_APPROVAL by PRE_APPROVER': 15, 'Declaration REJECTED by BUDGET OWNER': 16, 'Declaration FOR_APPROVAL by ADMINISTRATION': 17}
-    
-    #dicNum = {'Network Load:Low': 1, 'Network Load:Medium': 2, 'Network Load:High': 3, 'Patient Location:Home': 4, 
-     #     'Patient Location:Old-Age-Home': 5, 'Patient Location:Hospital': 6, 'Accompanying people:Caregiver': 7, 
-      #    'Accompanying people:Relative': 8, 'Accompanying people:None': 9, 'Patient Vision:Normal': 10, 
-       #   'Patient Vision:Blind': 11, 'Patient Vision:Night Blindness/Poor Vision': 12, 'Abnormality Detection:Low': 13, 
-        #  'Abnormality Detection:Medium': 14, 'Abnormality Detection:High': 15, 'Patient Illness Status:Under Treatment': 16, 
-         # 'Patient Illness Status:Treatment Completed': 17, 'Prior Illness:Yes': 18, 'Prior Illness:No': 19, 
-          #'Time of the Day:Day': 20, 'Time of the Day:Night': 21, 'Patient Condition:Sick': 22, 'Patient Condition:Normal': 23, 
-          #'Patient Condition:Stable': 24, 'Online portal:Working': 25, 'Online portal:Server Down': 26, 
-          #'Age:Elderly': 27, 'Age:Young': 28, 'Test Feasibility at home:Yes': 29, 'Test Feasibility at home:No': 30}
-     
+
     nodeLabel= []
-    x= [num for num in elem]
+    
     for num in elem:        
         nodeLabel.extend(key for key, value in dicNum.items() if value == num)
     return nodeLabel
 
-def findeSupConfValue(dic, source, target):
+def findeSupConfValue(dic, antecedent, consequent):
     supConfvalue = ()
     max_supVal = max(int(value[0]) for key,value in dic.items())
     for key, value in dic.items():
-        if str((source,target)) == key :
+        if str((antecedent,consequent)) == key :
             supConfvalue = (round(value[0]/max_supVal,2),round(value[1], 2))
     return supConfvalue
 
@@ -203,22 +191,10 @@ def is_transitiv(relations, all_targ):
                 transRel.extend([rel2])
                 
               
-  
     for item in transRel: 
         if item in rels:rels.remove(item)
     return rels    
 
-                   
-def is_reflexiv(y):
-    return y
-def is_antisymm(x):
-    is_antisymmetric = True
-
-    for edge in g.edges:
-        source, target = edge
-        if (target, source) in g.edges and source != target:
-            is_antisymmetric = False
-            break
 
 if __name__ == "__main__":
     path = r"C:\Users\Loli\BA\output.txt\BA\testresutl\2020PermitLog\PermitLog_minSup75_minConf50.txt"
@@ -228,9 +204,9 @@ if __name__ == "__main__":
    
    
     logName= path.split('\\')[-1].split('.')[0]
-    dot_source = extract_data(input_data,logName)
-    graph = grv.Source(dot_source)
+    dot_antecedent = extract_data(input_data,logName)
+    graph = grv.antecedent(dot_antecedent)
     graph.render(filename=logName, format='png', cleanup=True, view=True)
-    #generate_Graph(input_data)  
+
   
     
