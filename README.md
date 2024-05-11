@@ -5,7 +5,7 @@ This repository contains the code for my Bachelor thesis which investigates the 
 
 ## Files Description
 
-- `Ba.py`:
+- `preprocessing.py`:
   - **Purpose**: Preprocesses event logs and adjusts them to a format suitable for the ERMiner algorithm.
   - **Usage**: `python Ba.py <input_log_file> <output_formatted_file>`
 
