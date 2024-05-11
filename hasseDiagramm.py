@@ -197,7 +197,7 @@ def is_transitiv(relations, all_targ):
 
 
 if __name__ == "__main__":
-    path = r"C:\Users\Loli\BA\output.txt\BA\testresutl\2020PermitLog\PermitLog_minSup75_minConf50.txt"
+    path = r"PATH_TO_CONVERTED_EVENTLOGS\LOGS.TXT"
     
     with open(path, "r") as file: 
         input_data = file.readlines()
