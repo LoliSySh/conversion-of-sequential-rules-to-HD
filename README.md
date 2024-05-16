@@ -25,3 +25,7 @@ This codebase is developed using Python 3.8. Dependencies include:
 
 ## Contact
 For any queries regarding this project, please open an issue in this repository.
+
+## Lizenz
+
+Dieses Projekt steht unter der [GNU General Public License v3.0 Lizenz](LICENSE).
